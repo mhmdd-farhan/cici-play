@@ -1,103 +1,258 @@
+"use client";
+
 import Image from "next/image";
+import { BiSearchAlt } from "react-icons/bi";
+import Link from "next/link";
+import { BsCart3 } from "react-icons/bs";
+import { useEffect, useState } from "react";
+
+const images = [
+  {
+    src: "https://ucarecdn.com/424398cc-bc26-4b27-a62d-a9db4b44c043/gameimage1.jpg",
+    alt: "Image 1",
+    width: 600,
+    height: 100,
+  },
+  {
+    src: "https://ucarecdn.com/80443223-b9c2-44dc-9b79-bf0d44ad2447/imagegame2.jpg",
+    alt: "Image 2",
+    width: 600,
+    height: 100,
+  },
+  {
+    src: "https://ucarecdn.com/6c987b9c-5530-446f-a27f-4d97df7fe4ff/imagegame3.jpeg",
+    alt: "Image 3",
+    width: 600,
+    height: 100,
+  },
+];
+
+const menu = [
+  {
+    name: "Home",
+    href: "/",
+    logo: (
+      <Image
+        src="https://ucarecdn.com/497ca109-65db-41b3-afc8-6ba554f9dda6/54ba50fd0f326269f28c29bdfbfa07e59f23a450.png"
+        width={30}
+        height={30}
+        alt="Home Logo"
+        className="text-2xl"
+      />
+    ),
+  },
+  {
+    name: "Gold",
+    href: "/gold",
+    logo: (
+      <Image
+        src="https://ucarecdn.com/e1451b66-486f-4879-bcde-ef117b2e3d7e/08095415e3fbc23a2a8002f9d4f3bca722091c8b.png"
+        width={30}
+        height={30}
+        alt="Gold Logo"
+        className="text-2xl"
+      />
+    ),
+  },
+  {
+    name: "Item",
+    href: "/item",
+    logo: (
+      <Image
+        src="https://ucarecdn.com/0bf86b59-dcc3-4d0a-b177-74b52fbeabe2/f4f806685210b1f422179d6e3c97d416b752cf1f.png"
+        width={30}
+        height={30}
+        alt="Item Logo"
+        className="text-2xl"
+      />
+    ),
+  },
+  {
+    name: "Boot",
+    href: "/boot",
+    logo: (
+      <Image
+        src="https://ucarecdn.com/13f7d1b1-2909-4b2b-8e5b-97119ff7cba3/099772f6f6e932fc8074935ef6b33900ef115af4.png"
+        width={30}
+        height={30}
+        alt="Boot Logo"
+        className="text-2xl"
+      />
+    ),
+  },
+  {
+    name: "News",
+    href: "/news",
+    logo: (
+      <Image
+        src="https://ucarecdn.com/ee7bf6c8-e227-4f45-b665-a425d049bb0d/5e214cbe60dd6173509dd58b21f605045463fa4e.png"
+        width={30}
+        height={30}
+        alt="News Logo"
+        className="text-2xl"
+      />
+    ),
+  },
+  {
+    name: "",
+    href: "search",
+    logo: <BiSearchAlt className="text-2xl" />,
+  },
+];
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [current, setCurrent] = useState(0);
+  const [startX, setStartX] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+  const length = images.length;
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isDragging) {
+        setCurrent((prev) => (prev + 1) % images.length);
+      }
+    }, 7000);
+    return () => clearInterval(interval);
+  }, [length, isDragging]);
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setStartX(e.touches[0].clientX);
+    setIsDragging(true);
+    setDragOffset(0);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!startX) return;
+    const currentX = e.touches[0].clientX;
+    const diff = currentX - startX;
+    setDragOffset(diff);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    setIsDragging(false);
+    const endX = e.changedTouches[0].clientX;
+    if (startX === null) return;
+    const deltaX = endX - startX;
+
+    if (Math.abs(deltaX) > 50) {
+      if (deltaX > 0) {
+        setCurrent((prev) => (prev - 1 + length) % length);
+      } else {
+        setCurrent((prev) => (prev + 1) % length);
+      }
+    }
+    setStartX(null);
+    setDragOffset(0);
+  };
+
+  const handleDotClick = (index: number) => {
+    setCurrent(index);
+  };
+
+  return (
+    <section className="min-h-screen flex flex-col bg-gray-800">
+      <header>
+        <nav className="flex items-center justify-between p-4 px-6 text-white font-sans">
+          <Image
+            src="https://ucarecdn.com/aa55542a-26df-4daf-a173-0442e5fb6a5c/aecea1323e6a4a0fe0e466eb12a4035f498c7d15.png"
+            width={170}
+            height={80}
+            alt="logo"
+          />
+          <div className="flex items-center justify-between space-x-7">
+            {menu.map((item) => (
+              <Link
+                key={item.name + item.href}
+                href={item.href}
+                className="flex items-center space-x-1 hover:text-purple-500"
+              >
+                {item.logo}
+                <span>{item.name}</span>
+              </Link>
+            ))}
+          </div>
+          <div className="flex items-center space-x-4">
+            <Link
+              href="/cart"
+              className="py-2 px-3 bg-gray-700 rounded-lg"
+            >
+              <BsCart3 size={21} />
+            </Link>
+            <select
+              className="bg-gray-700 rounded-lg p-1.5 text-lg"
+              name="language"
+              id="language-select"
+            >
+              <option value="en">
+                🇺🇸 EN
+              </option>
+              <option value="id">
+                🇨🇳 CH
+              </option>
+            </select>
+            <Link
+              href="/sign-up"
+              className="px-3.5 py-1.5 bg-gray-900 border border-gray-600 rounded-lg"
+            >
+              Sign Up
+            </Link>
+          </div>
+        </nav>
+      </header>
+      <main>
+        <div className="relative w-full h-[300px] overflow-hidden rounded-md">
+          {/* Overlay kiri */}
+          <div className="absolute inset-y-0 left-0 w-4 bg-gradient-to-r from-gray-800 to-transparent z-10" />
+          {/* Overlay kanan */}
+          <div className="absolute inset-y-0 right-0 w-4 bg-gradient-to-l from-gray-800 to-transparent z-10" />
+          {/* Overlay atas */}
+          <div className="absolute inset-x-0 top-0 h-2 bg-gradient-to-b from-gray-800 to-transparent z-10" />
+          {/* Overlay bawah */}
+          <div className="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-t from-gray-800 to-transparent z-10" />
+
+          {/* Updated Slides */}
+          <div
+            className="flex h-full"
+            style={{
+              transform: `translateX(calc(-${current * 100}% + ${dragOffset}px))`,
+              transition: isDragging
+                ? "none"
+                : "transform 700ms ease-in-out",
+            }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            {images.map((image, index) => (
+              <div key={index} className="min-w-full h-full relative">
+                <Image
+                  draggable={false}
+                  src={image.src}
+                  alt={`slide-${index}`}
+                  width={image.width}
+                  height={image.height}
+                  className="w-full h-full object-fill"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Dots */}
+          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-50 flex space-x-2">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => handleDotClick(index)}
+                className={`w-6 h-2 rounded-full transition-all duration-700 cursor-pointer ${current === index
+                  ? "bg-purple-600"
+                  : "bg-white/50"
+                  }`}
+              />
+            ))}
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    </section>
   );
 }
