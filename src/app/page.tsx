@@ -14,13 +14,13 @@ const images = [
     height: 100,
   },
   {
-    src: "https://ucarecdn.com/80443223-b9c2-44dc-9b79-bf0d44ad2447/imagegame2.jpg",
+    src: "https://ucarecdn.com/424398cc-bc26-4b27-a62d-a9db4b44c043/gameimage1.jpg",
     alt: "Image 2",
     width: 600,
     height: 100,
   },
   {
-    src: "https://ucarecdn.com/6c987b9c-5530-446f-a27f-4d97df7fe4ff/imagegame3.jpeg",
+    src: "https://ucarecdn.com/424398cc-bc26-4b27-a62d-a9db4b44c043/gameimage1.jpg",
     alt: "Image 3",
     width: 600,
     height: 100,
@@ -232,19 +232,19 @@ export default function Home() {
                   alt={`slide-${index}`}
                   width={image.width}
                   height={image.height}
-                  className="w-full h-full object-fill"
+                  className="w-full h-full object-top object-cover"
                 />
               </div>
             ))}
           </div>
 
           {/* Dots */}
-          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-50 flex space-x-2">
+          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-50 flex space-x-2">
             {images.map((_, index) => (
               <button
                 key={index}
                 onClick={() => handleDotClick(index)}
-                className={`w-6 h-2 rounded-full transition-all duration-700 cursor-pointer ${current === index
+                className={`w-6 h-1.5 transition-all duration-700 cursor-pointer ${current === index
                   ? "bg-purple-600"
                   : "bg-white/50"
                   }`}
